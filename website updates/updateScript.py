@@ -11,78 +11,70 @@ from urllib.request import urlopen
 import win32api
 from notify_run import Notify
 import smtplib
-from cryptography.fernet import Fernet
 from configparser import ConfigParser 
 
+#Reference from https://stackabuse.com/how-to-send-emails-with-gmail-using-python/
+def send_email(username, password):
+    """send email to the person who wishes to recieve notification
+    """
+    sent_from = username
+    to = [noti_email]
+    subject = 'Course registeration for ' + course
+    body = 'The course you want has a seat open!!'
+    message ='Subject: {}\n\n{}'.format(subject, body)
 
+    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    server.ehlo()
+    server.login(username, password)
+    server.sendmail(sent_from, to, message)
+    server.close()
 
 
 #get information from user
 course = input("what course are you looking for?")
 noti_email = input("what is your email that you want to get notificaition at?")
-
+url = input("What is the 'section' specific url that you want to get in" +
+"(ex: https://courses.students.ubc.ca/cs/courseschedule?pname=subjarea&tname=subj-section&dept=BIOL&course=234&section=921)?")
+registered = input("How many people are registered in this section so far(only enter number ex: 100)?")
+# course = "BIOL 234"
+# noti_email = "s31302@gmail.com"
+# url = "https://courses.students.ubc.ca/cs/courseschedule?pname=subjarea&tname=subj-section&dept=BIOL&course=234&section=921"
+# registered = "100"
 #Creates the notify channel
 notify = Notify()
-print(notify.register() + "go to this website for notification")
-## Encrypt my email data
-key = b'GV2cvMW4av8mR1o8G7OPrf1eSjGHPrR4-MoWBb76QmI='
-cipher_suite = Fernet(key)
-ciphered_text = b'gAAAAABeu3gEGRvWoRnyY1L90Hg_XcrLg_S-9pBE1j20MWrogxt2_0a8f1kEKDl77fn_qCVT4RuFWW-ZD-nh-f6R_See6d7kQg=='
-uncipher_text = (cipher_suite.decrypt(ciphered_text)) 
-print(uncipher_text)
+print(notify.register())
+print("go to this website if you want push notificaiton from browser")
 ## Keeps looping through the website until a spot is open
 while True:
-    url = "https://courses.students.ubc.ca/cs/courseschedule?pname=subjarea&tname=subj-section&dept=BIOL&course=234&section=921"
     html = urlopen(url).read()
     soup = BeautifulSoup(html, "html.parser")
     text = soup.get_text()
     text_list = text.split()
-    print("updating")
-    word_looking_for = "Registered:100"
+    word_looking_for = "Registered:" + registered
     
 
     # if the amount of people registered has not changed keep looping
     if word_looking_for in text_list:
         # wait 60 seconds,
-        time.sleep(60)
+        print("No seats avaliable yet updating in 30 seconds")
+        time.sleep(30)
         # continue with the script,
         continue
         
     # if the amout of people registered has changed do a pop up and send a notificaiton on the website
     else:
-        full_text = soup.find_all("Registered:100")
-        notify.send("register for course now")
-        win32api.MessageBox(0, 'BIOL234', 'Course registeration')
+        notify.send("register for " + course + " now")
         try:
-            send_email()
+            # log into server account to send message
+            config = ConfigParser()
+            config.read('config.ini')
+            username = config.get("email", "username")
+            password = config.get("email", "password")
+            send_email(username, password)
+            print("email notificaiton sent")
         except:
             print("something went wrong with emailing stuff")
+        win32api.MessageBox(0, course, 'Spot is now open for' + course)
         break
 
 
-#Reference from https://stackabuse.com/how-to-send-emails-with-gmail-using-python/
-def send_email():
-    """send email to the person who wishes to recieve notification
-    """
-    # log into server account to send message
-    config = ConfigParser()
-    config.read('config.ini')
-    username = config.get("email", "username")
-    password = config.get("email", "password")
-    sent_from = username
-    to = [noti_email]
-    subject = 'Course registeration for ' + course
-    body = 'The course you want has a seat open!!'
-    email_text = """\
-    From: %s
-    To: %s
-    Subject: %s
-
-    %s
-    """ % (sent_from, ", ".join(to), subject, body)
-
-    server = smtplib.SMTP_SSL(username, 465)
-    server.ehlo()
-    server.login(username, password)
-    server.sendmail(sent_from, to, email_text)
-    server.close()
