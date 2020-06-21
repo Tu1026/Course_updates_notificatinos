@@ -12,7 +12,13 @@ import win32api
 from notify_run import Notify
 import smtplib
 from configparser import ConfigParser 
+from dotenv import load_dotenv
+import os
+import winsound
 
+
+load_dotenv()
+s = os.getenv("password")
 #Reference from https://stackabuse.com/how-to-send-emails-with-gmail-using-python/
 def send_email(username, password):
     """send email to the person who wishes to recieve notification
@@ -51,11 +57,9 @@ while True:
     text = soup.get_text()
     text_list = text.split()
     word_looking_for = "Registered:" + registered
-    
-
     # if the amount of people registered has not changed keep looping
     if word_looking_for in text_list:
-        # wait 60 seconds,
+        # wait 30 seconds,
         print("No seats avaliable yet updating in 30 seconds")
         time.sleep(30)
         # continue with the script,
@@ -63,7 +67,7 @@ while True:
         
     # if the amout of people registered has changed do a pop up and send a notificaiton on the website
     else:
-        notify.send("register for " + course + " now")
+        notify.send("register for " + course + " NOW")
         try:
             # log into server account to send message
             config = ConfigParser()
@@ -75,6 +79,7 @@ while True:
         except:
             print("something went wrong with emailing stuff")
         win32api.MessageBox(0, course, 'Spot is now open for' + course)
+        winsound.MessageBeep()
         break
 
 
