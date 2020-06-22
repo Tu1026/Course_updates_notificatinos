@@ -72,8 +72,10 @@ while True:
             # log into server account to send message
             config = ConfigParser()
             config.read('config.ini')
-            username = config.get("email", "username")
-            password = config.get("email", "password")
+            username = os.getenv("username1")
+            password = os.getenv("password")
+            # username = config.get("email", "username")
+            # password = config.get("email", "password")
             send_email(username, password)
             print("email notificaiton sent")
         except:
