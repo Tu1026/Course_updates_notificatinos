@@ -7,7 +7,6 @@ idna==2.8
 notify-run==0.0.13
 PyQRCode==1.2.1
 python-dotenv==0.13.0
-pywin32==227
 requests==2.22.0
 soupsieve==2.0.1
 urllib3==1.25.9
