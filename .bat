@@ -4,3 +4,4 @@ call virtual\scripts\activate
 call pip install -r requirements.txt
 cd %~dp0\website updates
 call python updateScript.py
+

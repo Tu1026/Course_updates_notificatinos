@@ -8,7 +8,7 @@
 from bs4 import BeautifulSoup
 import time
 from urllib.request import urlopen
-import win32api
+import ctypes
 from notify_run import Notify
 import smtplib
 from configparser import ConfigParser 
@@ -80,8 +80,7 @@ while True:
             print("email notificaiton sent")
         except:
             print("something went wrong with emailing stuff")
-        win32api.MessageBox(0, course, 'Spot is now open for' + course)
+        ctypes.windll.user32.MessageBoxW(0, course, 'Spot is now open for', course)
         winsound.MessageBeep()
         break
-
 
