@@ -14,7 +14,6 @@ import smtplib
 from configparser import ConfigParser 
 from dotenv import load_dotenv
 import os
-import winsound
 
 
 load_dotenv()
@@ -81,6 +80,5 @@ while True:
         except:
             print("something went wrong with emailing stuff")
         ctypes.windll.user32.MessageBoxW(0, course, 'Spot is now open for', course)
-        winsound.MessageBeep()
         break
 
