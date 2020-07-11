@@ -15,10 +15,41 @@ from configparser import ConfigParser
 from dotenv import load_dotenv
 import os
 import winsound
+from fbchat import Client
+import fbchat
 
 
 load_dotenv()
-s = os.getenv("password")
+
+# def send_fb_message(words: str, uid: str):
+#     """print the given string one word at a time to fb friend
+#         Args: 
+#             a string that contain multiple words, the uid of the fb friend
+#             user input: username and password
+#     """
+#     username = str(input("Username: ")) 
+#     client = fbchat.Client(username, getpass()) 
+#     for word in words:
+#         client.send(fbchat.models.Message(word),
+#                 uid)
+#         time.sleep(1)
+#     client.logout()
+
+## Personalized for myself
+def send_fb_message():
+    """print the given string one word at a time to fb friend
+        Args: 
+            a string that contain multiple words, the uid of the fb friend
+            user input: username and password
+    """
+    uid = os.getenv("uid")
+    username_fb = os.getenv("username2") 
+    passwrod_fb = os.getenv("password1")
+    client = fbchat.Client(username_fb, passwrod_fb)
+    client.send(fbchat.models.Message("Register for class nowwwwwwwwwww"), uid)
+    client.logout()
+
+
 #Reference from https://stackabuse.com/how-to-send-emails-with-gmail-using-python/
 def send_email(username, password):
     """send email to the person who wishes to recieve notification
@@ -76,11 +107,14 @@ while True:
             password = os.getenv("password")
             # username = config.get("email", "username")
             # password = config.get("email", "password")
+            send_fb_message()
             send_email(username, password)
             print("email notificaiton sent")
         except:
-            print("something went wrong with emailing stuff")
+            print("something went wrong with emailing stuff or FB stuff")
         ctypes.windll.user32.MessageBoxW(0, course, 'Spot is now open for', course)
         winsound.MessageBeep()
         break
+
+
 
