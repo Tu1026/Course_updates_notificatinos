@@ -36,7 +36,7 @@ load_dotenv()
 #     client.logout()
 
 ## Personalized for myself
-def send_fb_message():
+def send_fb_message(word: str):
     """print the given string one word at a time to fb friend
         Args: 
             a string that contain multiple words, the uid of the fb friend
@@ -46,7 +46,7 @@ def send_fb_message():
     username_fb = os.getenv("username2") 
     passwrod_fb = os.getenv("password1")
     client = fbchat.Client(username_fb, passwrod_fb)
-    client.send(fbchat.models.Message("Register for class nowwwwwwwwwww"), uid)
+    client.send(fbchat.models.Message(word), uid)
     client.logout()
 
 
@@ -90,9 +90,9 @@ while True:
     word_looking_for = "Registered:" + registered
     # if the amount of people registered has not changed keep looping
     if word_looking_for in text_list:
-        # wait 30 seconds,
-        print("No seats avaliable yet updating in 30 seconds")
-        time.sleep(30)
+        # wait 15 seconds,
+        print("No seats avaliable yet updating in 15 seconds")
+        time.sleep(15)
         # continue with the script,
         continue
         
@@ -107,7 +107,7 @@ while True:
             password = os.getenv("password")
             # username = config.get("email", "username")
             # password = config.get("email", "password")
-            send_fb_message()
+            send_fb_message("register for " + course + "NOWWWWWWW")
             send_email(username, password)
             print("email notificaiton sent")
         except:
