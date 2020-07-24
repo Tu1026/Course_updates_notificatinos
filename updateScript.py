@@ -107,16 +107,17 @@ while True:
     text_list = text.split()
     word_looking_for = "Registered:" + registered
     t = datetime.datetime.today()
-    sleep_time = datetime.datetime(t.year, t.month, t.day, 2, 0)
-    wake_time = datetime.datetime(t.year, t.month, t.day, 4, 20)
     # if the amount of people registered has not changed keep looping
     if word_looking_for in text_list:
         # wait 10 seconds,
         print("No seats avaliable yet updating in 10 seconds")
         time.sleep(10)
         if t.hour >= 2 and t.hour <= 4:
-            time.sleep (datetime.timedelta.total_seconds().datetime.timedelta(hours=2, minute=20))
-            print('sleeping right now till 4.20 AM')
+            time_sleep = datetime.timedelta(hours=2, minutes=20)
+            print(f'sleeping right now till 4.20 AM for{time_sleep} seconds to avoid scheduled maintenence')
+            time.sleep(time_sleep.total_seconds())
+            t = datetime.datetime.today()
+            print(f'waking up at time {t}') 
         # continue with the script,
         
         continue
