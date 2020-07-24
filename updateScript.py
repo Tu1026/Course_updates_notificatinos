@@ -19,6 +19,8 @@ from fbchat import Client
 import fbchat
 import discord
 import datetime
+import gc
+
 
 load_dotenv()
 
@@ -83,7 +85,54 @@ def send_email(username, password):
     server.sendmail(sent_from, to, message)
     server.close()
 
-
+def update_loop():
+## Keeps looping through the website until a spot is open
+    while True:
+        try: 
+            text = soup.get_text()
+            text_list = text.split()
+            word_looking_for = "Registered:" + registered
+            t = datetime.datetime.today()
+            # if the amount of people registered has not changed keep looping
+        except:
+            time.sleep(10) 
+            update_loop()
+           
+        if word_looking_for in text_list:
+            # wait 10 seconds,
+            print("No seats avaliable yet updating in 10 seconds")
+            time.sleep(10)
+            if t.hour >= 2 and t.hour <= 4:
+                time_sleep = datetime.timedelta(hours=2, minutes=20)
+                print(f'sleeping right now till 4.20 AM for{time_sleep.total_seconds()} seconds to avoid scheduled maintenence')
+                time.sleep(time_sleep.total_seconds())
+                t = datetime.datetime.today()
+                print(f'waking up at time {t}') 
+            # continue with the script,
+            del text, text_list, word_looking_for, t
+            gc.collect()
+            continue
+            
+        # if the amout of people registered has changed do a pop up and send a notificaiton on the website
+        else:
+            # notify.send("register for " + course + " NOW")
+            try:
+                # log into server account to send message
+                # config = ConfigParser()
+                # config.read('config.ini')
+                username = os.getenv("username1")
+                password = os.getenv("password")
+                # username = config.get("email", "username")
+                # password = config.get("email", "password")
+                # send_fb_message("register for " + course + "NOWWWWWWW")
+                send_discord_message(course)
+                send_email(username, password)
+                print("email notificaiton sent")
+            except:
+                print("something went wrong with emailing stuff or FB stuff")
+            ctypes.windll.user32.MessageBoxW(0, course, 'Spot is now open for', course)
+            winsound.MessageBeep()
+            break
 
 #get information from user
 course = input("what course are you looking for?")
@@ -91,7 +140,9 @@ noti_email = input("what is your email that you want to get notificaition at?")
 url = input("What is the 'section' specific url that you want to get in" +
 "(ex: https://courses.students.ubc.ca/cs/courseschedule?pname=subjarea&tname=subj-section&dept=BIOL&course=234&section=921)?")
 registered = input("How many people are registered in this section so far(only enter number ex: 100)?")
-
+html = urlopen(url).read()
+soup = BeautifulSoup(html, "html.parser")
+update_loop()
 
 ## Create notification channel
 # notify = Notify()
@@ -99,49 +150,6 @@ registered = input("How many people are registered in this section so far(only e
 # print("go to this website if you want push notificaiton from browser")
 
 
-## Keeps looping through the website until a spot is open
-while True:
-    html = urlopen(url).read()
-    soup = BeautifulSoup(html, "html.parser")
-    text = soup.get_text()
-    text_list = text.split()
-    word_looking_for = "Registered:" + registered
-    t = datetime.datetime.today()
-    # if the amount of people registered has not changed keep looping
-    if word_looking_for in text_list:
-        # wait 10 seconds,
-        print("No seats avaliable yet updating in 10 seconds")
-        time.sleep(10)
-        if t.hour >= 2 and t.hour <= 4:
-            time_sleep = datetime.timedelta(hours=2, minutes=20)
-            print(f'sleeping right now till 4.20 AM for{time_sleep} seconds to avoid scheduled maintenence')
-            time.sleep(time_sleep.total_seconds())
-            t = datetime.datetime.today()
-            print(f'waking up at time {t}') 
-        # continue with the script,
-        
-        continue
-        
-    # if the amout of people registered has changed do a pop up and send a notificaiton on the website
-    else:
-        # notify.send("register for " + course + " NOW")
-        try:
-            # log into server account to send message
-            # config = ConfigParser()
-            # config.read('config.ini')
-            username = os.getenv("username1")
-            password = os.getenv("password")
-            # username = config.get("email", "username")
-            # password = config.get("email", "password")
-            # send_fb_message("register for " + course + "NOWWWWWWW")
-            send_discord_message(course)
-            send_email(username, password)
-            print("email notificaiton sent")
-        except:
-            print("something went wrong with emailing stuff or FB stuff")
-        ctypes.windll.user32.MessageBoxW(0, course, 'Spot is now open for', course)
-        winsound.MessageBeep()
-        break
 
 
 
