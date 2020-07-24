@@ -17,7 +17,8 @@ import os
 import winsound
 from fbchat import Client
 import fbchat
-
+import discord
+import datetime
 
 load_dotenv()
 
@@ -36,18 +37,34 @@ load_dotenv()
 #     client.logout()
 
 ## Personalized for myself
-def send_fb_message(word: str):
-    """print the given string one word at a time to fb friend
-        Args: 
-            a string that contain multiple words, the uid of the fb friend
-            user input: username and password
-    """
-    uid = os.getenv("uid")
-    username_fb = os.getenv("username2") 
-    passwrod_fb = os.getenv("password1")
-    client = fbchat.Client(username_fb, passwrod_fb)
-    client.send(fbchat.models.Message(word), uid)
-    client.logout()
+# def send_fb_message(word: str):
+#     """print the given string one word at a time to fb friend
+#         Args: 
+#             a string that contain multiple words, the uid of the fb friend
+#             user input: username and password
+#     """
+#     uid = os.getenv("uid")
+#     username_fb = os.getenv("username2") 
+#     passwrod_fb = os.getenv("password1")
+#     client = fbchat.Client(username_fb, passwrod_fb)
+#     client.send(fbchat.models.Message(word), uid)
+#     client.logout()
+
+def send_discord_message(word):
+    TOKEN = os.getenv('DISCORD_TOKEN')
+    client = discord.Client()
+
+    @client.event
+    async def on_ready():
+        await client.get_channel(736117723322646528).send(f'Register for {word}RIGHT NOW!!!!!!!!!!!')
+        await client.get_channel(736117723322646528).send(f'Register for {word}RIGHT NOW!!!!!!!!!!!')
+        await client.get_channel(736117723322646528).send(f'Register for {word}RIGHT NOW!!!!!!!!!!!')
+        await client.get_channel(736117723322646528).send(f'Register for {word}RIGHT NOW!!!!!!!!!!!')
+        await client.get_channel(736117723322646528).send(f'Register for {word}RIGHT NOW!!!!!!!!!!!')
+        await client.close()
+       
+
+    client.run(TOKEN)
 
 
 #Reference from https://stackabuse.com/how-to-send-emails-with-gmail-using-python/
@@ -67,6 +84,7 @@ def send_email(username, password):
     server.close()
 
 
+
 #get information from user
 course = input("what course are you looking for?")
 noti_email = input("what is your email that you want to get notificaition at?")
@@ -76,9 +94,9 @@ registered = input("How many people are registered in this section so far(only e
 
 
 ## Create notification channel
-notify = Notify()
-print(notify.register())
-print("go to this website if you want push notificaiton from browser")
+# notify = Notify()
+# print(notify.register())
+# print("go to this website if you want push notificaiton from browser")
 
 
 ## Keeps looping through the website until a spot is open
@@ -88,26 +106,34 @@ while True:
     text = soup.get_text()
     text_list = text.split()
     word_looking_for = "Registered:" + registered
+    t = datetime.datetime.today()
+    sleep_time = datetime.datetime(t.year, t.month, t.day, 2, 0)
+    wake_time = datetime.datetime(t.year, t.month, t.day, 4, 20)
     # if the amount of people registered has not changed keep looping
     if word_looking_for in text_list:
-        # wait 15 seconds,
-        print("No seats avaliable yet updating in 15 seconds")
-        time.sleep(15)
+        # wait 10 seconds,
+        print("No seats avaliable yet updating in 10 seconds")
+        time.sleep(10)
+        if t.hour >= 2 and t.hour <= 4:
+            time.sleep (datetime.timedelta.total_seconds().datetime.timedelta(hours=2, minute=20))
+            print('sleeping right now till 4.20 AM')
         # continue with the script,
+        
         continue
         
     # if the amout of people registered has changed do a pop up and send a notificaiton on the website
     else:
-        notify.send("register for " + course + " NOW")
+        # notify.send("register for " + course + " NOW")
         try:
             # log into server account to send message
-            config = ConfigParser()
-            config.read('config.ini')
+            # config = ConfigParser()
+            # config.read('config.ini')
             username = os.getenv("username1")
             password = os.getenv("password")
             # username = config.get("email", "username")
             # password = config.get("email", "password")
-            send_fb_message("register for " + course + "NOWWWWWWW")
+            # send_fb_message("register for " + course + "NOWWWWWWW")
+            send_discord_message(course)
             send_email(username, password)
             print("email notificaiton sent")
         except:
