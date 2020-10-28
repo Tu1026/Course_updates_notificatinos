@@ -1,6 +1,6 @@
 @echo off
 cd %~dp0 
-call virtual\scripts\activate
+call activate tracker
 cd %~dp0
 call python updateScript.py
 
