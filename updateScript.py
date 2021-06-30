@@ -8,45 +8,15 @@
 from bs4 import BeautifulSoup
 import time
 from urllib.request import urlopen
-import ctypes
 import smtplib
 from dotenv import load_dotenv
 import os
-import winsound
 import discord
 import datetime
 import gc
 
 
 load_dotenv()
-
-# def send_fb_message(words: str, uid: str):
-#     """print the given string one word at a time to fb friend
-#         Args: 
-#             a string that contain multiple words, the uid of the fb friend
-#             user input: username and password
-#     """
-#     username = str(input("Username: ")) 
-#     client = fbchat.Client(username, getpass()) 
-#     for word in words:
-#         client.send(fbchat.models.Message(word),
-#                 uid)
-#         time.sleep(1)
-#     client.logout()
-
-## Personalized for myself
-# def send_fb_message(word: str):
-#     """print the given string one word at a time to fb friend
-#         Args: 
-#             a string that contain multiple words, the uid of the fb friend
-#             user input: username and password
-#     """
-#     uid = os.getenv("uid")
-#     username_fb = os.getenv("username2") 
-#     passwrod_fb = os.getenv("password1")
-#     client = fbchat.Client(username_fb, passwrod_fb)
-#     client.send(fbchat.models.Message(word), uid)
-#     client.logout()
 
 def send_discord_message(word):
     TOKEN = os.getenv('DISCORD_TOKEN')
@@ -92,11 +62,11 @@ def update_loop():
             # if the amount of people registered has not changed keep looping
         except:
             time.sleep(10) 
-            update_loop()
+            continue
            
         if word_looking_for in text_list:
             # wait 10 seconds,
-            print("No seats avaliable yet updating in 10 seconds")
+            print(f"No seats avaliable yet updating in 10 seconds. Current time: {t.month}/{t.day} {t.hour}:{t.minute}:{t.second}")
             time.sleep(10)
             if t.hour >= 2 and t.hour <= 4:
                 time_sleep = datetime.timedelta(hours=2, minutes=20)
@@ -126,8 +96,6 @@ def update_loop():
                 print("email notificaiton sent")
             except:
                 print("something went wrong with emailing stuff or FB stuff")
-            ctypes.windll.user32.MessageBoxW(0, course, 'Spot is now open for', course)
-            winsound.MessageBeep()
             break
 
 #get information from user
