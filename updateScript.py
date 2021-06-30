@@ -9,14 +9,10 @@ from bs4 import BeautifulSoup
 import time
 from urllib.request import urlopen
 import ctypes
-from notify_run import Notify
 import smtplib
-from configparser import ConfigParser 
 from dotenv import load_dotenv
 import os
 import winsound
-from fbchat import Client
-import fbchat
 import discord
 import datetime
 import gc
