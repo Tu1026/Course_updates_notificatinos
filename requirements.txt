@@ -21,7 +21,7 @@ paho-mqtt==1.5.0
 pylint==2.5.3
 PyQRCode==1.2.1
 python-dotenv==0.13.0
-pywin32==227
+pywin32==301
 requests==2.22.0
 six==1.15.0
 soupsieve==2.0.1
